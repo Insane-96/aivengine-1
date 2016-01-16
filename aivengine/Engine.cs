@@ -15,7 +15,6 @@ using System.Linq;
 using System.Threading;
 using Aiv.Fast2D;
 using Aiv.Vorbis;
-using NVorbis.OpenTKSupport;
 using OpenTK.Audio;
 
 namespace Aiv.Engine

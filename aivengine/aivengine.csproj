@@ -39,10 +39,6 @@
       <HintPath>..\packages\NVorbis.0.8.4.0\lib\NVorbis.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="NVorbis.OpenTKSupport, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NVorbis.OpenTKSupport.1.1.0\lib\NVorbis.OpenTKSupport.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <HintPath>..\packages\opentk_unoffical.1.1.788.3121\lib\OpenTK.dll</HintPath>
       <Private>True</Private>
@@ -70,5 +66,19 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="bin\Debug\aiv-fast2d.dll" />
+    <Content Include="bin\Debug\aiv-fast2d.pdb" />
+    <Content Include="bin\Debug\aiv-vorbis.dll" />
+    <Content Include="bin\Debug\aiv-vorbis.pdb" />
+    <Content Include="bin\Debug\aivengine.dll" />
+    <Content Include="bin\Debug\aivengine.pdb" />
+    <Content Include="bin\Debug\NVorbis.dll" />
+    <Content Include="bin\Debug\NVorbis.xml" />
+    <Content Include="bin\Debug\OpenTK.dll" />
+    <Content Include="bin\Debug\OpenTK.xml" />
   </ItemGroup>
 </Project>
