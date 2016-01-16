@@ -10,9 +10,9 @@ namespace Aiv.Engine
     {
         public GameObject LinkedObject { get; set; } = null;
 
-        public float X { get; set; }
+        public override float X { get; set; }
 
-        public float Y { get; set; }
+        public override float Y { get; set; }
 
         public override void Update()
         {
