@@ -12,6 +12,7 @@ using System.Drawing;
 using System.Linq;
 using OpenTK;
 
+
 namespace Aiv.Engine
 {
     public class TextObject : GameObject
@@ -21,16 +22,17 @@ namespace Aiv.Engine
         public TextObject(
             Vector2 scale, Color color, string fontFile = "font.png",
             Dictionary<char, Tuple<Vector2, Vector2>> charToSprite = null, float alpha = 1f, 
-            Color fontBaseColor = default(Color))
+            Color fontBaseColor = default(Color), float spaceWidth = 44f, float spaceHeight = 31f,
+            float padding = float.MinValue, Func<float, float> paddingFunc = null)
         {
-            if (fontBaseColor == default(Color))
-                fontBaseColor = Color.FromArgb(238, 242, 238);
-            textRaw = new Fast2D.TextObject
-            {
-                FontBaseColor = fontBaseColor,
-                Alpha = (int) (alpha*255),
-                // crappy workaround for crappy font sprites ! (lots of empty spaces etc.)
-                PaddingFunc = (float width) =>
+            // default for ff-fonts.. this should be the font file sprite's color
+            //  which will be changed if you choose a color, do not use if you have  a font with multiple
+            //  colors, shadows and such.
+            //if (fontBaseColor == default(Color))
+            //    fontBaseColor = Color.FromArgb(238, 242, 238);
+            // if the textobject has been initialized without a padding and a paddingFunc use default one
+            if (paddingFunc == null && padding == float.MinValue)
+                paddingFunc = (float width) =>
                 {
                     float result = width;
                     if (width > 15f && width < 44f)
@@ -38,17 +40,26 @@ namespace Aiv.Engine
                     else if (width < 15f)
                         result *= -0.1f;
                     return result;
-                },
-                SpaceWidth = 44f,
-                SpaceHeight = 31f
+                };
+            textRaw = new Fast2D.TextObject
+            {
+                FontBaseColor = fontBaseColor,
+                Alpha = (int) (alpha*255),
+                SpaceWidth = spaceWidth,
+                SpaceHeight = spaceHeight,
             };
-            // to remove
-            if (color == Color.White)
-                color = Color.FromArgb(238, 242, 238);
+            if (padding != float.MinValue)
+                textRaw.Padding = padding;
+            else
+                textRaw.PaddingFunc = paddingFunc;
+
+            // ff workaround... to remove b4 gamejam
+            //if (color == Color.White)
+            //    color = Color.FromArgb(238, 242, 238);
 
             FontFile = new Asset(fontFile).FileName;
             if (charToSprite == null)
-                charToSprite = SetDefaultCharToSprite();
+                charToSprite = DefaultCharToSprite;
             textRaw.CharToSprite = charToSprite;
             Scale = scale;
             Color = color;
@@ -87,9 +98,10 @@ namespace Aiv.Engine
             set { textRaw.Scale = value; }
         }
 
-        private Dictionary<char, Tuple<Vector2, Vector2>> SetDefaultCharToSprite()
-        {
-            return new Dictionary<char, Tuple<Vector2, Vector2>>
+        // change this once in your game to have your own fonts, if you have multiple fonts you
+        //  have to put this dictionary every time you create a new textobject
+        public static Dictionary<char, Tuple<Vector2, Vector2>> DefaultCharToSprite { get; set; } =
+            new Dictionary<char, Tuple<Vector2, Vector2>>
             {
                 {'0', Tuple.Create(new Vector2(0f, 0f), new Vector2(44f, 31f))},
                 {'1', Tuple.Create(new Vector2(45f, 0f), new Vector2(22f, 31f))},
@@ -139,7 +151,6 @@ namespace Aiv.Engine
                 {',', Tuple.Create(new Vector2(272f, 93f), new Vector2(13f, 31f))},
                 {'\'', Tuple.Create(new Vector2(285f, 93f), new Vector2(13f, 31f))}
             };
-        }
 
         public Vector2 Measure()
         {

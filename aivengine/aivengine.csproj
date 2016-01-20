@@ -31,8 +31,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="aiv-fast2d, Version=1.0.5858.38491, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="aiv-fast2d">
       <HintPath>..\..\aiv-fast2d\aiv-fast2d\bin\Debug\aiv-fast2d.dll</HintPath>
     </Reference>
     <Reference Include="aiv-vorbis, Version=1.0.5858.19585, Culture=neutral, processorArchitecture=MSIL">
@@ -44,7 +43,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
-      <HintPath>..\packages\opentk_unoffical.1.1.788.3121\lib\OpenTK.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\OpenTK.1.1.1589.5942\lib\NET40\OpenTK.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -62,7 +62,6 @@
     <Compile Include="SpriteAsset.cs" />
     <Compile Include="TextObject.cs" />
     <Compile Include="RectangleObject.cs" />
-    <Compile Include="LineObject.cs" />
     <Compile Include="ParticleSystem.cs" />
     <Compile Include="TimerManager.cs" />
     <Compile Include="Utils.cs" />

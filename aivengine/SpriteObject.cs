@@ -66,7 +66,7 @@ namespace Aiv.Engine
                 animation.currentFrame++;
                 // end of the animation ?
                 var lastFrame = animation.Sprites.Count - 1;
-                if (animation.currentFrame >= lastFrame)
+                if (animation.currentFrame > lastFrame)
                 {
                     if (animation.Loop)
                     {
