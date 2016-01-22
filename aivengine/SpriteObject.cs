@@ -7,6 +7,7 @@ Forked by Luciano Ferraro
 */
 
 using System.Collections.Generic;
+using Aiv.Fast2D;
 using OpenTK;
 
 namespace Aiv.Engine
@@ -14,46 +15,70 @@ namespace Aiv.Engine
     public class SpriteObject : GameObject
     {
         private SpriteAsset currentSprite;
-        private float width;
-        private float height;
 
         public Dictionary<string, Animation> Animations { get; set; }
 
         public string CurrentAnimation { get; set; }
+
+        public Sprite Sprite { get; set; }
 
         public SpriteAsset CurrentSprite
         {
             get { return currentSprite; }
             set
             {
-                if (value == null)
-                {
-                    Width = 0;
-                    Height = 0;
-                }
-                else
-                {
-                    Width = value.Sprite.Width;
-                    Height = value.Sprite.Height;
-                }
                 currentSprite = value;
             }
         }
 
-        public float Width
+        public Vector2 Pivot
         {
-            get { return width * Scale.X; }
-            set { width = value; }
+            get { return Sprite.pivot; }
+            set { Sprite.pivot = value; }
         }
 
-        public float Height
+        public float Rotation
         {
-            get { return height * Scale.Y; }
-            set { height = value; }
+            get { return Sprite.Rotation; }
+            set { Sprite.Rotation = value; }
         }
 
-        public float BaseWidth => width;
-        public float BaseHeight => height;
+        public float EulerRotation
+        {
+            get { return Sprite.EulerRotation; }
+            set { Sprite.EulerRotation = value; }
+        }
+
+        public float Opacity { get; set; } = 1f;
+
+        public float Width => Sprite.Width * Scale.X;
+
+        public float Height => Sprite.Height * Scale.Y;
+
+        public override Vector2 Scale
+        {
+            get { return base.Scale; }
+            set
+            {
+                base.Scale = value;
+                Sprite.scale = value;
+            }
+        }
+
+        public Vector2 SpriteOffset { get; set; }
+        public float BaseWidth => Sprite.Width;
+        public float BaseHeight => Sprite.Height;
+
+        public bool AutomaticHitBox { get; }
+
+        public SpriteObject(int width, int height, bool automaticHitBox = false)
+        {
+            Sprite = new Sprite(width, height);
+            AutomaticHitBox = automaticHitBox;
+            if (automaticHitBox)
+                AddHitBox("auto", 0, 0, 1, 1);
+        }
+
 
         private void Animate(string animationName)
         {
@@ -87,16 +112,34 @@ namespace Aiv.Engine
             }
             // simply draw the current frame
             var spriteAssetToDraw = animation.Sprites[animation.currentFrame];
-            var spriteToDraw = spriteAssetToDraw.Sprite;
-            Width = spriteToDraw.Width;
-            Height = spriteToDraw.Height;
-            var cameraX = IgnoreCamera ? 0 : Engine.Camera.X;
-            var cameraY = IgnoreCamera ? 0 : Engine.Camera.Y;
 
-            spriteAssetToDraw.Sprite.position.X = X - cameraX;
-            spriteAssetToDraw.Sprite.position.Y = Y - cameraY;
-            spriteAssetToDraw.Sprite.scale = Scale;
-            spriteAssetToDraw.Draw();
+            DrawSprite(spriteAssetToDraw);
+        }
+
+        private void DrawSprite(SpriteAsset sprite)
+        {
+            Sprite.position.X = DrawX;
+            Sprite.position.Y = DrawY;
+            sprite.Texture.SetOpacity(Opacity);
+            Sprite.DrawTexture(
+                sprite.Texture,
+                (int) (sprite.X + SpriteOffset.X), (int) (sprite.Y + SpriteOffset.Y), 
+                sprite.Width, sprite.Height);
+            UpdateAutomaticHitBox(sprite);
+        }
+
+        public virtual void UpdateAutomaticHitBox(SpriteAsset sprite)
+        {
+            if (AutomaticHitBox)
+            {
+                if (HitBoxes == null || !HitBoxes.ContainsKey("auto"))
+                    AddHitBox("auto", 0, 0, 1, 1);
+                var hitBoxInfo = sprite.CalculateRealHitBox();
+                HitBoxes["auto"].X = hitBoxInfo.Item1.X;
+                HitBoxes["auto"].Y = hitBoxInfo.Item1.Y;
+                HitBoxes["auto"].Width = (int)hitBoxInfo.Item2.X;
+                HitBoxes["auto"].Height = (int)hitBoxInfo.Item2.Y;
+            }
         }
 
         public override void Draw()
@@ -111,13 +154,14 @@ namespace Aiv.Engine
             }
             if (CurrentSprite != null)
             {
-                var cameraX = IgnoreCamera ? 0 : Engine.Camera.X;
-                var cameraY = IgnoreCamera ? 0 : Engine.Camera.Y;
-                CurrentSprite.Sprite.position.X = X - cameraX;
-                CurrentSprite.Sprite.position.Y = Y - cameraY;
-                CurrentSprite.Sprite.scale = Scale;
-                CurrentSprite.Draw();
+                DrawSprite(CurrentSprite);
             }
+        }
+
+        public override void Destroy()
+        {
+            base.Destroy();
+            Sprite.Dispose();
         }
 
         // optional engine param to add animations before spawning the SpriteObject
@@ -149,7 +193,7 @@ namespace Aiv.Engine
 
         public override GameObject Clone()
         {
-            var go = new SpriteObject();
+            var go = new SpriteObject((int) Width, (int) Height);
             go.Name = Name;
             go.X = X;
             go.Y = Y;

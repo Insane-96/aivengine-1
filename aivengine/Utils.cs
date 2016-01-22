@@ -8,7 +8,7 @@ using System;
 
 namespace Aiv.Engine
 {
-    public class Utils
+    public static class Utils
     {
         public static float ConvertDegreeToRadians(int degree)
         {

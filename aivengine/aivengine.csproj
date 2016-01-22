@@ -34,9 +34,9 @@
     <Reference Include="aiv-fast2d">
       <HintPath>..\..\aiv-fast2d\aiv-fast2d\bin\Debug\aiv-fast2d.dll</HintPath>
     </Reference>
-    <Reference Include="aiv-vorbis, Version=1.0.5858.19585, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\aiv-vorbis\aiv-vorbis\bin\Debug\aiv-vorbis.dll</HintPath>
+    <Reference Include="aiv-vorbis, Version=1.0.5864.22892, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Aiv.Vorbis.0.2.0\lib\net45\aiv-vorbis.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="NVorbis, Version=0.8.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NVorbis.0.8.4.0\lib\NVorbis.dll</HintPath>
@@ -60,6 +60,7 @@
     <Compile Include="Asset.cs" />
     <Compile Include="SpriteObject.cs" />
     <Compile Include="SpriteAsset.cs" />
+    <Compile Include="TextConfig.cs" />
     <Compile Include="TextObject.cs" />
     <Compile Include="RectangleObject.cs" />
     <Compile Include="ParticleSystem.cs" />
@@ -70,7 +71,9 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Debug\aiv-fast2d.dll" />
     <Content Include="bin\Debug\aiv-fast2d.pdb" />

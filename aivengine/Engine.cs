@@ -42,7 +42,7 @@ namespace Aiv.Engine
         {
         }
 
-        public Engine(string windowName, int width, int height, int fps, bool fullscreen)
+        public Engine(string windowName, int width, int height, int fps = 60, bool fullscreen = false)
         {
             Initialize();
 
@@ -91,32 +91,6 @@ namespace Aiv.Engine
         public event AfterUpdateEventHandler OnAfterUpdate;
 
         public event BeforeUpdateEventHandler OnBeforeUpdate;
-
-
-        // put in fast2d?
-        // rewrite / use aiv-vorbis
-        //private object PlaySoundThread(string assetName, bool loop, float volume = 1f)
-        //{
-        //    var fileName = GetAsset(assetName).FileName;
-        //    var ext = fileName.Substring(fileName.LastIndexOf(@".", StringComparison.Ordinal) + 1);
-
-        //    if (ext != "ogg")
-        //        throw new NotImplementedException($"Support for audio extension '{ext}' is not implemented.");
-        //    try
-        //    {
-        //        var stream = new OggStream(fileName);
-        //        stream.IsLooped = loop;
-        //        stream.Volume = volume;
-        //        stream.Prepare();
-        //        stream.Play();
-        //        return stream;
-        //    }
-        //    catch 
-        //    {
-        //        Console.WriteLine("AUDIO PLAY ERROR.");
-        //    }
-        //    return null;
-        //}
 
         protected void GameUpdate()
         {
@@ -173,17 +147,19 @@ namespace Aiv.Engine
                 dirtyObjects.Clear();
                 foreach (var pair in newObjects)
                 {
-                    if (pair.Value == 1)
+                    switch (pair.Value)
                     {
-                        pair.Key.Time = Time;
-                        SortedObjects.Add(pair.Key);
-                    }
-                    else if (pair.Value == 0)
-                        SortedObjects.Remove(pair.Key);
-                    else if (pair.Value == 2) // order changed
-                    {
-                        SortedObjects.Remove(pair.Key);
-                        SortedObjects.Add(pair.Key);
+                        case 1:
+                            pair.Key.Time = Time;
+                            SortedObjects.Add(pair.Key);
+                            break;
+                        case 0:
+                            SortedObjects.Remove(pair.Key);
+                            break;
+                        case 2:
+                            SortedObjects.Remove(pair.Key);
+                            SortedObjects.Add(pair.Key);
+                            break;
                     }
                 }
             }
@@ -192,6 +168,9 @@ namespace Aiv.Engine
 
         protected void Initialize()
         {
+            // crappy
+            new AudioSource();
+
             Camera = new Camera();
 
             // create dictionaries
@@ -277,7 +256,7 @@ namespace Aiv.Engine
             while (IsGameRunning && Window.opened)
             {
                 GameUpdate();
-                if (Window.opened == false)
+                if (!Window.opened)
                     IsGameRunning = false;
             }
             IsGameRunning = false;

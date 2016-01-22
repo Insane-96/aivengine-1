@@ -14,10 +14,10 @@ namespace Aiv.Engine
 {
     public class AudioAsset : Asset
     {
-        // whole file
-        public AudioAsset(string fileName) : base(fileName)
+        public AudioAsset(string fileName, bool stream = false) : base(fileName)
         {
-            Clip = new AudioClip(FileName);
+            if (!stream)
+                Clip = new AudioClip(FileName);
         }
 
         public AudioClip Clip { get; set; }

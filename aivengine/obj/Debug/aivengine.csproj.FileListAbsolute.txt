@@ -1,7 +1,6 @@
 C:\Users\Lukian\Dropbox\AIV\GitProjects\aivengine-1\aivengine\bin\Debug\aivengine.dll
 C:\Users\Lukian\Dropbox\AIV\GitProjects\aivengine-1\aivengine\bin\Debug\aivengine.pdb
 C:\Users\Lukian\Dropbox\AIV\GitProjects\aivengine-1\aivengine\bin\Debug\aiv-fast2d.pdb
-C:\Users\Lukian\Dropbox\AIV\GitProjects\aivengine-1\aivengine\bin\Debug\aiv-vorbis.pdb
 C:\Users\Lukian\Dropbox\AIV\GitProjects\aivengine-1\aivengine\bin\Debug\NVorbis.xml
 C:\Users\Lukian\Dropbox\AIV\GitProjects\aivengine-1\aivengine\bin\Debug\OpenTK.xml
 C:\Users\Lukian\Dropbox\AIV\GitProjects\aivengine-1\aivengine\obj\Debug\aivengine.csprojResolveAssemblyReference.cache

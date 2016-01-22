@@ -8,6 +8,7 @@ Forked by Luciano Ferraro
 
 using System;
 using System.Collections.Generic;
+using Aiv.Fast2D;
 using Aiv.Vorbis;
 using OpenTK;
 
@@ -178,13 +179,13 @@ namespace Aiv.Engine
             return go;
         }
 
-        public void Destroy()
+        public virtual void Destroy()
         {
             // call event handlers
             OnDestroy?.Invoke(this);
             Enabled = false;
 
-            audioSource?.Stop();
+            AudioSource.Dispose();
             Engine?.RemoveObject(this);
         }
 
@@ -243,7 +244,7 @@ namespace Aiv.Engine
                 Name = name;
                 X = x;
                 Y = y;
-                this.Width = width;
+                Width = width;
                 Height = height;
             }
 
