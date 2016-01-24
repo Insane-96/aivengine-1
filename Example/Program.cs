@@ -69,10 +69,12 @@ namespace Example
 
             // set default directory for assets, will be appened to all assets's path
             Asset.BasePath = "..\\..\\Assets";
-            var sprite = new SpriteAsset("goblins.png", 100, 100, 50, 50, repeatx: true, repeaty: true);
-            var obj = new SpriteObject(sprite.Width + 20, sprite.Height + 100, true);
-            obj.CurrentSprite = sprite;
-            obj.Scale = new Vector2(3f, 3f);
+
+            // load repeating texture
+            var repeatingGoblins = new SpriteAsset("goblins.png", 100, 100, 150, 150, repeatx: true, repeaty: true);
+            // auto hitbox and spriteasset with repeatx or/and repeaty are NOT compatible
+            var obj = new SpriteObject(repeatingGoblins.Width + 20, repeatingGoblins.Height + 100);
+            obj.CurrentSprite = repeatingGoblins;
 
             obj.OnUpdate += sender =>
             {
@@ -80,20 +82,34 @@ namespace Example
                 s.SpriteOffset += new Vector2(15f, 15f) * s.DeltaTime;
             };
 
+            // text
             TextConfig.Default = new TextConfig(new Asset("font.png"), charToSprite);
             var semiTransparentText = new TextObject(0.66f, Color.Red, 0.8f);
             semiTransparentText.Text = "SEMI TRANSPARENT";
             semiTransparentText.Y = obj.Height;
-
             var bigText = new TextObject(1.1f, Color.CadetBlue);
             bigText.Text = "BIG TEXT";
             var semiTransparentTextMeasure = semiTransparentText.Measure();
             bigText.Y = semiTransparentTextMeasure.Y + semiTransparentText.Y;
+            var bigTextMeasure = bigText.Measure();
+
+            // hitboxes
+            var spriteSheet = new SpriteAsset("rob.png");
+            var tileWidth = spriteSheet.Width/22;
+            var tileHeight = spriteSheet.Height/1;
+            var spriteAsset = new SpriteAsset("rob.png", 0, 0, tileWidth, tileHeight);
+            var spriteH = new SpriteObject(spriteAsset.Width, spriteAsset.Height, true);
+            spriteH.Y = bigText.Y + bigTextMeasure.Y;
+            spriteH.CurrentSprite = spriteAsset;
+            spriteH.Scale = new Vector2(5f, 5f);
+
+            // spawn gameobjects
+            engine.SpawnObject("obj", obj);
 
             engine.SpawnObject("semiTransparentText", semiTransparentText);
             engine.SpawnObject("bigText", bigText);
 
-            engine.SpawnObject("obj", obj);
+            engine.SpawnObject("spriteH", spriteH);
 
             engine.Run();
         }

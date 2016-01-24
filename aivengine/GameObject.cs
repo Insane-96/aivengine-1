@@ -47,8 +47,6 @@ namespace Aiv.Engine
             Timer = new TimerManager(this);
         }
 
-        // if true then all objects before this do not need to get redrawn every frame
-        public virtual bool BaseObject { get; set; }
         public virtual bool CanDraw { get; set; } = true;
 
         public float DeltaTime { get; internal set; }
@@ -138,19 +136,11 @@ namespace Aiv.Engine
         // check with all objects
         public List<Collision> CheckCollisions()
         {
-            if (HitBoxes == null)
-            {
-                throw new Exception("GameObject without hitboxes");
-            }
             var collisions = new List<Collision>();
+            if (HitBoxes == null) return collisions;
             foreach (var obj in Engine.Objects.Values)
             {
-                if (!obj.Enabled)
-                    continue;
-                // ignore myself
-                if (obj == this)
-                    continue;
-                if (obj.HitBoxes == null)
+                if (!obj.Enabled || obj == this || obj.HitBoxes == null)
                     continue;
                 foreach (var hitBox in HitBoxes.Values)
                 {
@@ -193,6 +183,7 @@ namespace Aiv.Engine
         {
             OnBeforeUpdate?.Invoke(this);
 
+            Timer.Update();
             Update();
             OnUpdate?.Invoke(this);
 
@@ -213,7 +204,6 @@ namespace Aiv.Engine
         // this is called by the game loop at every cycle
         public virtual void Update()
         {
-            Timer.Update();
         }
 
         public class HitBox

@@ -50,7 +50,7 @@ namespace Aiv.Engine
         // x, y, width, height, minalpha, minpixelcount
         private Tuple<int, int, int, int, int, int> lastHitBoxCalculationInfo;
         private Tuple<Vector2, Vector2> cachedHitBoxInfo;
-        public Tuple<Vector2, Vector2> CalculateRealHitBox(int minAlpha = 25, int minPixelCount = 5)
+        public Tuple<Vector2, Vector2> CalculateRealHitBox(int minAlpha = 25, int minPixelCount = 2)
         {
             var key = Tuple.Create(X, Y, Width, Height, minAlpha, minPixelCount);
             if (lastHitBoxCalculationInfo != null && lastHitBoxCalculationInfo.Equals(key))
@@ -115,7 +115,7 @@ namespace Aiv.Engine
                 }
             }
 
-            //size = new Vector2(size.X - offset.X, size.Y - offset.Y);
+            size = new Vector2(size.X - offset.X, size.Y - offset.Y);
             //offset = new Vector2(offset.X - X, offset.Y - Y);
             lastHitBoxCalculationInfo = key;
             cachedHitBoxInfo = Tuple.Create(offset, size);

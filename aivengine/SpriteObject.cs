@@ -147,16 +147,17 @@ namespace Aiv.Engine
         public override void Draw()
         {
             base.Draw();
-            if (!CanDraw)
-                return;
-            if (CurrentAnimation != null)
+            if (CanDraw)
             {
-                Animate(CurrentAnimation);
-                return;
-            }
-            if (CurrentSprite != null)
-            {
-                DrawSprite(CurrentSprite);
+                if (CurrentAnimation != null)
+                {
+                    Animate(CurrentAnimation);
+                    return;
+                }
+                if (CurrentSprite != null)
+                {
+                    DrawSprite(CurrentSprite);
+                }
             }
         }
 

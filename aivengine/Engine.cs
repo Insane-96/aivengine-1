@@ -6,8 +6,6 @@ Forked by Luciano Ferraro
 
 */
 
-#define FAST2D
-
 using System;
 using System.Collections.Generic;
 using System.Drawing;
