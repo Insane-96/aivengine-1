@@ -75,8 +75,6 @@ namespace Aiv.Engine
         {
             Sprite = new Sprite(width, height);
             AutomaticHitBox = automaticHitBox;
-            if (automaticHitBox)
-                AddHitBox("auto", 0, 0, 1, 1);
         }
 
 
@@ -85,17 +83,17 @@ namespace Aiv.Engine
             var animation = Animations[animationName];
             var neededTime = 1f/animation.Fps;
 
-            if (Time - animation.LastTick >= neededTime)
+            if (Time - animation.LastTick >= neededTime && !animation.Locked)
             {
                 animation.LastTick = Time;
-                animation.currentFrame++;
+                animation.CurrentFrame++;
                 // end of the animation ?
                 var lastFrame = animation.Sprites.Count - 1;
-                if (animation.currentFrame > lastFrame)
+                if (animation.CurrentFrame > lastFrame)
                 {
                     if (animation.Loop)
                     {
-                        animation.currentFrame = 0;
+                        animation.CurrentFrame = 0;
                     }
                     else if (animation.OneShot)
                     {
@@ -106,12 +104,12 @@ namespace Aiv.Engine
                     else
                     {
                         // block to the last frame
-                        animation.currentFrame = lastFrame;
+                        animation.CurrentFrame = lastFrame;
                     }
                 }
             }
             // simply draw the current frame
-            var spriteAssetToDraw = animation.Sprites[animation.currentFrame];
+            var spriteAssetToDraw = animation.Sprites[animation.CurrentFrame];
 
             DrawSprite(spriteAssetToDraw);
         }
@@ -132,13 +130,17 @@ namespace Aiv.Engine
         {
             if (AutomaticHitBox)
             {
-                if (HitBoxes == null || !HitBoxes.ContainsKey("auto"))
+                if (HitBoxes == null || !HitBoxes.ContainsKey("auto")) { 
                     AddHitBox("auto", 0, 0, 1, 1);
+                    HitBoxes["auto"].UseScaling = false;
+                }
                 var hitBoxInfo = sprite.CalculateRealHitBox();
-                HitBoxes["auto"].X = hitBoxInfo.Item1.X;
-                HitBoxes["auto"].Y = hitBoxInfo.Item1.Y;
-                HitBoxes["auto"].Width = (int)hitBoxInfo.Item2.X;
-                HitBoxes["auto"].Height = (int)hitBoxInfo.Item2.Y;
+                var deltaW = (float)Sprite.Width/sprite.Width;
+                var deltaH = (float)Sprite.Height/sprite.Height;
+                HitBoxes["auto"].X = hitBoxInfo.Item1.X * deltaW * Scale.X;
+                HitBoxes["auto"].Y = hitBoxInfo.Item1.Y * deltaW * Scale.Y;
+                HitBoxes["auto"].Width = (int)(hitBoxInfo.Item2.X * deltaW * Scale.X);
+                HitBoxes["auto"].Height = (int)(hitBoxInfo.Item2.Y * deltaH * Scale.Y);
             }
         }
 
@@ -181,7 +183,7 @@ namespace Aiv.Engine
             {
                 animation.Sprites.Add((SpriteAsset) engine.GetAsset(asset));
             }
-            animation.currentFrame = 0;
+            animation.CurrentFrame = 0;
             // force the first frame to be drawn
             animation.LastTick = 0;
             animation.Loop = true;
@@ -213,13 +215,14 @@ namespace Aiv.Engine
 
         public class Animation
         {
-            public int currentFrame;
+            public int CurrentFrame { get; set; }
             public SpriteObject owner;
             public float Fps { get; set; }
             public List<SpriteAsset> Sprites { get; internal set; }
             public float LastTick { get; internal set; }
             public bool Loop { get; set; }
             public bool OneShot { get; set; }
+            public bool Locked { get; set; }
 
             public Animation Clone()
             {

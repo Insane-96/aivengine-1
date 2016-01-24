@@ -64,18 +64,20 @@ namespace Example
 
         static void Main(string[] args)
         {
-            Engine engine = new Engine("test", 1024, 768, 60, false);
+            Engine engine = new Engine("test", 1024, 768, 60, false, false);
+            engine.debugCollisions = true;
 
             // set default directory for assets, will be appened to all assets's path
             Asset.BasePath = "..\\..\\Assets";
-            var sprite = new SpriteAsset("goblins.png", repeatx: true, repeaty: true);
-            var obj = new SpriteObject(sprite.Width, sprite.Height);
+            var sprite = new SpriteAsset("goblins.png", 100, 100, 50, 50, repeatx: true, repeaty: true);
+            var obj = new SpriteObject(sprite.Width + 20, sprite.Height + 100, true);
             obj.CurrentSprite = sprite;
+            obj.Scale = new Vector2(3f, 3f);
 
             obj.OnUpdate += sender =>
             {
                 var s = (SpriteObject)sender;
-                s.SpriteOffset += Vector2.One;
+                s.SpriteOffset += new Vector2(15f, 15f) * s.DeltaTime;
             };
 
             TextConfig.Default = new TextConfig(new Asset("font.png"), charToSprite);

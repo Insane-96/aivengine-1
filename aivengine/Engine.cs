@@ -37,17 +37,20 @@ namespace Aiv.Engine
         private int totalObjCount;
 
         private readonly Window Window;
+        private float wantedDeltaTime;
 
         protected Engine()
         {
         }
 
-        public Engine(string windowName, int width, int height, int fps = 60, bool fullscreen = false)
+        public Engine(string windowName, int width, int height, int fps = 60, bool fullscreen = false, bool vsync = false)
         {
             Initialize();
 
+            wantedDeltaTime = fps > 0 ? 1f/fps : 0;
+
             // FPS?
-            Window = new Window(width, height, windowName, fullscreen);
+            Window = new Window(width, height, windowName, fullscreen, vsync);
         }
 
         public TimerManager Timer { get; private set; }
@@ -222,18 +225,6 @@ namespace Aiv.Engine
             Assets[name] = asset;
         }
 
-        //public virtual void PlaySound(string assetName, float volume = 1f, bool loop = false)
-        //{
-        //    AudioAsset audioAsset = (AudioAsset) GetAsset(assetName);
-        //    audioSource.Volume = volume; // same volume for everything? :( more audio sources? effect - soundtrack - etc.
-        //    audioSource.Play(audioAsset.Clip, loop);
-        //}
-
-        //public virtual void PlaySoundLoop(string assetName, float volume = 1f)
-        //{
-        //    PlaySound(assetName, volume, true);
-        //}
-
         public void RemoveObject(GameObject obj)
         {
             if (debugCollisions && obj.HitBoxes != null)
@@ -258,13 +249,13 @@ namespace Aiv.Engine
                 GameUpdate();
                 if (!Window.opened)
                     IsGameRunning = false;
+                // maybe calculate average DeltaTime
+                //if (Window.deltaTime < wantedDeltaTime)
+                //{
+                //    Thread.Sleep((int)((wantedDeltaTime - Window.deltaTime) * 111000));
+                //}
             }
             IsGameRunning = false;
-            // check if we need to slowdown
-            //if (endTick - startTick < freq)
-            //{
-            //    Thread.Sleep(freq - (endTick - startTick));
-            //}
         }
 
         public void SpawnObject(GameObject obj)

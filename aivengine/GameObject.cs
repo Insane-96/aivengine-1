@@ -225,15 +225,17 @@ namespace Aiv.Engine
             private float x;
             private float y;
 
+            public bool UseScaling { get; set; } = true;
+
             public int Width
             {
-                get { return (int)(width * Owner.Scale.X); }
+                get { return (int)(width * (UseScaling ? Owner.Scale.X : 1)); }
                 set { width = value; }
             }
 
             public int Height
             {
-                get { return (int)(height * Owner.Scale.Y); }
+                get { return (int)(height * (UseScaling ? Owner.Scale.Y : 1)); }
                 set { height = value; }
             }
 
@@ -250,13 +252,13 @@ namespace Aiv.Engine
 
             public float X
             {
-                get { return x * Owner.Scale.X; }
+                get { return x * (UseScaling ? Owner.Scale.X : 1); }
                 set { x = value; }
             }
 
             public float Y
             {
-                get { return y * Owner.Scale.Y; }
+                get { return y * (UseScaling ? Owner.Scale.Y : 1); }
                 set { y = value; }
             }
 
