@@ -79,7 +79,7 @@ namespace Example
             obj.OnUpdate += sender =>
             {
                 var s = (SpriteObject)sender;
-                s.SpriteOffset += new Vector2(15f, 15f) * s.DeltaTime;
+                s.SpriteOffset += new Vector2(10f, 0f) * s.DeltaTime;
             };
 
             // text

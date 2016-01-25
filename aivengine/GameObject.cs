@@ -133,6 +133,27 @@ namespace Aiv.Engine
             HitBoxes[name] = hbox;
         }
 
+        public bool HasCollisions()
+        {
+            if (HitBoxes == null) return false;
+            foreach (var obj in Engine.Objects.Values)
+            {
+                if (!obj.Enabled || obj == this || obj.HitBoxes == null)
+                    continue;
+                foreach (var hitBox in HitBoxes.Values)
+                {
+                    foreach (var otherHitBox in obj.HitBoxes.Values)
+                    {
+                        if (hitBox.CollideWith(otherHitBox))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
         // check with all objects
         public List<Collision> CheckCollisions()
         {
